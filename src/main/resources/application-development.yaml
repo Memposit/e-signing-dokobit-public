@@ -1,0 +1,33 @@
+server:
+  port: 8091
+spring:
+  application:
+    name: e-signing-dokobit
+dokobit:
+  api:
+    token:
+    baseUrl: https://developers.dokobit.com/
+    redirectUrl: http://localhost:8091/api/e-signing/auth/redirect
+    frontUrl: http://localhost:4200
+zuul:
+  addProxyHeaders: false
+  routes:
+    api/e-signing/auth/code:
+      path: /api/e-signing/auth/code/**
+      url: ${dokobit.api.baseUrl}/api/authentication/create
+      stripPrefix: true
+    api/e-signing/pdf/signing:
+      path: /api/e-signing/pdf/signing/**
+      url: ${dokobit.api.baseUrl}/mobile/sign.json
+      stripPrefix: true
+    api/e-signing/signing/status:
+      path: /api/e-signing/signing/status/**
+      url: ${dokobit.api.baseUrl}/mobile/sign/status/
+      stripPrefix: true
+    api/e-signing/auth/redirect:
+      path: /api/e-signing/auth/redirect/**
+      url: http://localhost:8089
+      stripPrefix: true
+
+
+
